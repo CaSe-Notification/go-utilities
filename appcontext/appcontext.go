@@ -7,6 +7,13 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
+type contextKey int
+
+const (
+	ipContextKey contextKey = iota
+	langContextKey
+)
+
 type AppContext struct {
 	requestID string
 	traceID   string
@@ -62,6 +69,36 @@ func (appCtx *AppContext) Context() context.Context {
 
 func (appCtx *AppContext) SetContext(ctx context.Context) {
 	appCtx.context = ctx
+}
+
+func (appCtx *AppContext) SetIP(ip string) {
+	appCtx.context = context.WithValue(appCtx.context, ipContextKey, ip)
+}
+
+func (appCtx *AppContext) GetIP() string {
+	ip, ok := appCtx.context.Value(ipContextKey).(string)
+	if !ok {
+		return ""
+	}
+	return ip
+}
+
+func (appCtx *AppContext) SetLang(lang string) {
+	appCtx.context = context.WithValue(appCtx.context, langContextKey, lang)
+}
+
+func (appCtx *AppContext) GetLang() Language {
+	lang, ok := appCtx.context.Value(langContextKey).(string)
+	if !ok {
+		return Vietnamese
+	}
+
+	dLang := ToLanguage(lang)
+	if !dLang.IsValid() {
+		return Vietnamese
+	}
+
+	return dLang
 }
 
 func generateID() string {
