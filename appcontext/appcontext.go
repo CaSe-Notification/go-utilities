@@ -10,7 +10,8 @@ import (
 type contextKey int
 
 const (
-	ipContextKey contextKey = iota
+	userContextKey contextKey = iota
+	ipContextKey
 	langContextKey
 )
 
@@ -69,6 +70,18 @@ func (appCtx *AppContext) Context() context.Context {
 
 func (appCtx *AppContext) SetContext(ctx context.Context) {
 	appCtx.context = ctx
+}
+
+func (appCtx *AppContext) SetUserID(id string) {
+	appCtx.context = context.WithValue(appCtx.context, userContextKey, id)
+}
+
+func (appCtx *AppContext) GetUserID() string {
+	id, ok := appCtx.context.Value(userContextKey).(string)
+	if !ok {
+		return ""
+	}
+	return id
 }
 
 func (appCtx *AppContext) SetIP(ip string) {
