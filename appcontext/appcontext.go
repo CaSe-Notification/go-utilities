@@ -42,6 +42,10 @@ func NewRest(ctx context.Context) *AppContext {
 	return newWithSource(ctx, "rest")
 }
 
+func NewGRPC(ctx context.Context) *AppContext {
+	return newWithSource(ctx, "grpc")
+}
+
 func NewWorker(ctx context.Context) *AppContext {
 	return newWithSource(ctx, "worker")
 }
